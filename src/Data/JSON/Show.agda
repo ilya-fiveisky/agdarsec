@@ -2,12 +2,13 @@
 
 module Data.JSON.Show where
 
-open import Data.Bool.Base using (Bool; false; true)
+open import Data.Bool.Base using (false; true)
 open import Data.Float.Base using (Float) renaming (show to showꟳ)
-open import Data.List.Base using (List; []; _∷_)
+open import Data.List using (List; []; _∷_)
 open import Data.Product using (_×_; _,_)
-open import Data.String.Base using (String; _++_)
+open import Data.String using (String; _++_)
 open import Data.JSON
+open import Data.JSON.Show.Escape using (escape)
 
 showᴬ : List JSON → String
 showᴺⱽ : String × JSON → String
@@ -28,17 +29,17 @@ show null = "null"
 show (bool false) = "false"
 show (bool true) = "true"
 show (number f) = showꟳ f
-show (string s) = "\"" ++ s ++ "\""
+show (string s) = "\"" ++ escape s ++ "\""
 show (array as) = "[" ++ showᴬ as ++ "]"
 show (object o) = "{" ++ showᴼ o ++ "}"
 
 -- Test.
 private
-  open import Data.Float.Base using (fromℕ; fromRatio)
+  open import Data.Float.Base using (fromRatio) renaming (fromℕ to fromℕꟳ)
   open import Data.Integer.Base using (+_)
-  open import Data.List.Base using ([_])
+  open import Data.List using ([_])
   open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-  _ : show (object [ "name" , (array ((number (fromℕ 1)) ∷ (number (fromRatio (+ 3) (+ 2))) ∷ [])) ])
+  _ : show (object [ "name" , (array ((number (fromℕꟳ 1)) ∷ (number (fromRatio (+ 3) (+ 2))) ∷ [])) ])
     ≡ "{\"name\": [1.0, 1.5]}"
   _ = refl
